@@ -1,0 +1,13 @@
+USE T7_PROJECT;
+
+SELECT * FROM T7_INSURANCE_COMPANY 
+WHERE T7_Company_Name IN
+	(SELECT T1.T7_Company_Name 
+	FROM (SELECT T7_Company_Name, COUNT(T7_Company_Name) AS C1 FROM T7_PRODUCT GROUP BY T7_Company_Name) AS T1
+	INNER JOIN   
+	(SELECT T7_Company_Name, COUNT(T7_Company_Name) AS C2 FROM T7_DEPARTMENT GROUP BY T7_Company_Name) AS T2
+	ON T1.T7_Company_Name = T2.T7_Company_Name
+	WHERE T1.C1 > T2.C2) 
+AND 
+T7_Company_Name IN
+(SELECT T7_Company_Name FROM T7_OFFICE GROUP BY T7_Company_Name HAVING GROUP_CONCAT(DISTINCT T7_Address) LIKE '%,%');
